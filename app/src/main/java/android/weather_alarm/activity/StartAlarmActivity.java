@@ -31,8 +31,10 @@ public class StartAlarmActivity extends AppCompatActivity {
 
         AlarmViewModel alarmViewModel = new ViewModelProvider(this).get(AlarmViewModel.class);
 
-        int id = getIntent().getIntExtra(AlarmFields.ID, -1);
-        String name = getIntent().getStringExtra(AlarmFields.NAME);
+        Intent intent = getIntent();
+        int id = intent.getIntExtra(AlarmFields.ID, -1);
+        String name = intent.getStringExtra(AlarmFields.NAME);
+        String ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
 
         TextClock textClock = findViewById(R.id.textClock);
         ObjectAnimator clockAnimator = ObjectAnimator.ofFloat(textClock, "alpha",
@@ -61,7 +63,7 @@ public class StartAlarmActivity extends AppCompatActivity {
             Alarm alarm = new Alarm(new Random().nextInt(Integer.MAX_VALUE),
                     calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
                     false, false, false, false, false,
-                    false, false, false, name + " snooze");
+                    false, false, false, name + " snooze", ringtone);
             alarm.schedule(context, true);
 
             stopService(context);

@@ -24,11 +24,13 @@
         <activity android:name=".activity.AddAlarmActivity" />
         <activity android:name=".activity.ModifyAlarmActivity" />
         <activity android:name=".activity.StartAlarmActivity" />
+
         <receiver android:name=".AlarmBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service android:name=".service.AlarmService" />
         <service android:name=".service.RescheduleAlarmsService" />
     </application>

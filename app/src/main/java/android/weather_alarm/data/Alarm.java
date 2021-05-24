@@ -45,10 +45,12 @@ public class Alarm {
     @NonNull
     private String name;
 
+    private String ringtone;
+
     public Alarm(@NonNull Integer id, @NonNull Integer hour, @NonNull Integer minute,
                  boolean recurring, boolean monday, boolean tuesday, boolean wednesday,
                  boolean thursday, boolean friday, boolean saturday, boolean sunday,
-                 @NonNull String name) {
+                 @NonNull String name, String ringtone) {
         this.id = id;
         this.hour = hour;
         this.minute = minute;
@@ -63,6 +65,7 @@ public class Alarm {
         this.sunday = sunday;
         this.recurringDays = null;
         this.name = name;
+        this.ringtone = ringtone;
     }
 
     @NonNull
@@ -117,13 +120,17 @@ public class Alarm {
         return sunday;
     }
 
+    public String getRecurringDays() {
+        return recurringDays;
+    }
+
     @NonNull
     public String getName() {
         return name;
     }
 
-    public String getRecurringDays() {
-        return recurringDays;
+    public String getRingtone() {
+        return ringtone;
     }
 
     public void setId(@NonNull Integer id) {
@@ -174,13 +181,18 @@ public class Alarm {
         this.sunday = sunday;
     }
 
+    public void setRecurringDays(String recurringDays) {
+        this.recurringDays = recurringDays;
+    }
+
     public void setName(@NonNull String name) {
         this.name = name;
     }
 
-    public void setRecurringDays(String recurringDays) {
-        this.recurringDays = recurringDays;
+    public void setRingtone(String ringtone) {
+        this.ringtone = ringtone;
     }
+
 
     public void schedule(Context context, boolean rescheduled) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -196,8 +208,10 @@ public class Alarm {
         intent.putExtra(AlarmFields.SATURDAY, saturday);
         intent.putExtra(AlarmFields.SUNDAY, sunday);
         intent.putExtra(AlarmFields.NAME, name);
+        intent.putExtra(AlarmFields.RINGTONE, ringtone);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = getCalendar();
 

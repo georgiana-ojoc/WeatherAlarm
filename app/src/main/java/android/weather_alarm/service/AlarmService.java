@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.weather_alarm.AlarmFields;
 import android.weather_alarm.R;
 import android.weather_alarm.activity.StartAlarmActivity;
+import android.weather_alarm.utility.RingtoneUtility;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -25,19 +26,21 @@ public class AlarmService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.soft_chime);
-        mediaPlayer.setLooping(true);
-
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Intent notificationIntent = new Intent(this, StartAlarmActivity.class);
+
         int id = intent.getIntExtra(AlarmFields.ID, -1);
         String name = intent.getStringExtra(AlarmFields.NAME);
+        String ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
+
         notificationIntent.putExtra(AlarmFields.ID, id);
         notificationIntent.putExtra(AlarmFields.NAME, name);
+        notificationIntent.putExtra(AlarmFields.RINGTONE, ringtone);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -48,7 +51,12 @@ public class AlarmService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
 
-        mediaPlayer.start();
+        int ringtoneIndex = RingtoneUtility.getRingtoneResource(ringtone);
+        if (ringtoneIndex != -1) {
+            mediaPlayer = MediaPlayer.create(this, ringtoneIndex);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
 
         long[] pattern = {0, 100, 1000};
         vibrator.vibrate(pattern, 0);

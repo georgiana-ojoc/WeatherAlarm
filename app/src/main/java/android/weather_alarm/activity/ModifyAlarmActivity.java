@@ -3,13 +3,18 @@ package android.weather_alarm.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.weather_alarm.AlarmFields;
 import android.weather_alarm.R;
 import android.weather_alarm.utility.AnimationUtility;
+import android.weather_alarm.utility.RingtoneUtility;
 import android.weather_alarm.utility.TimePickerUtility;
 import android.weather_alarm.view.AlarmViewModel;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +37,7 @@ import static java.util.Calendar.WEDNESDAY;
 
 public class ModifyAlarmActivity extends AppCompatActivity {
     private AlarmViewModel alarmViewModel;
+    private String ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class ModifyAlarmActivity extends AppCompatActivity {
         TimePickerUtility.setHour(timePicker, intent.getIntExtra(AlarmFields.HOUR, -1));
         TimePickerUtility.setMinute(timePicker, intent.getIntExtra(AlarmFields.MINUTE, -1));
 
-        EditText setNameEditText = findViewById(R.id.setNameEditText);
+        EditText setNameEditText = findViewById(R.id.enterNameEditText);
         setNameEditText.setText(intent.getStringExtra(AlarmFields.NAME));
 
         WeekdaysPicker weekDaysPicker = findViewById(R.id.weekDaysPicker);
@@ -60,6 +66,27 @@ public class ModifyAlarmActivity extends AppCompatActivity {
         setDays.put(SATURDAY, intent.getBooleanExtra(AlarmFields.SATURDAY, false));
         setDays.put(SUNDAY, intent.getBooleanExtra(AlarmFields.SUNDAY, false));
         weekDaysPicker.setCustomDays(setDays);
+
+        Spinner spinner = (Spinner) findViewById(R.id.ringtonesSpinner);
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ringtones, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        String oldRingtone = intent.getStringExtra(AlarmFields.RINGTONE);
+        spinner.setSelection(RingtoneUtility.getRingtonePosition(oldRingtone));
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ringtone = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                ringtone = oldRingtone;
+            }
+        });
 
         Button cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(view -> {
@@ -102,6 +129,7 @@ public class ModifyAlarmActivity extends AppCompatActivity {
                         alarm.setMonday(TimePickerUtility.isSelectedDay(selectedDays, SATURDAY));
                         alarm.setMonday(TimePickerUtility.isSelectedDay(selectedDays, SUNDAY));
                         alarm.setName(finalName);
+                        alarm.setRingtone(ringtone);
                         alarm.schedule(getApplicationContext(), true);
 
                         alarmViewModel.update(alarm);

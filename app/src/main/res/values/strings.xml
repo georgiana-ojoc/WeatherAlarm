@@ -7,8 +7,20 @@
     <string name="alarm">Alarm</string>
     <string name="name">Name</string>
     <string name="set_alarm_name">Enter alarm name</string>
+    <string name="ringtone">Ringtone</string>
     <string name="midnight">00:00</string>
     <string name="monday">Monday</string>
     <string name="snooze">Snooze</string>
     <string name="stop">Stop</string>
+    <string-array name="ringtones">
+        <item>Aura tone</item>
+        <item>Day break</item>
+        <item>Early riser</item>
+        <item>Fresh start</item>
+        <item>Happy day</item>
+        <item>Morning birds</item>
+        <item>Ping</item>
+        <item>Slow morning</item>
+        <item>Soft chime</item>
+    </string-array>
 </resources>

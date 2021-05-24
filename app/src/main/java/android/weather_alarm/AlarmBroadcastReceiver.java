@@ -16,6 +16,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int id = intent.getIntExtra(AlarmFields.ID, -1);
         String name = intent.getStringExtra(AlarmFields.NAME);
+        String ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
+
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             String text = "Alarm received after boot completed";
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
@@ -24,19 +26,22 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             String text = "Alarm received";
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
             if (!intent.getBooleanExtra(AlarmFields.RECURRING, false)) {
-                startAlarmService(context, name, id);
+                startAlarmService(context, id, name, ringtone);
             } else {
                 if (isScheduledToday(intent)) {
-                    startAlarmService(context, name, id);
+                    startAlarmService(context, id, name, ringtone);
                 }
             }
         }
     }
 
-    private void startAlarmService(Context context, String name, int id) {
+    private void startAlarmService(Context context, int id, String name, String ringtone) {
         Intent intentService = new Intent(context, AlarmService.class);
+
         intentService.putExtra(AlarmFields.ID, id);
         intentService.putExtra(AlarmFields.NAME, name);
+        intentService.putExtra(AlarmFields.RINGTONE, ringtone);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intentService);
         } else {

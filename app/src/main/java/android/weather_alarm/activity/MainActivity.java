@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnCheckedChangedL
                         modifyAlarmActivity.putExtra(AlarmFields.SATURDAY, alarm.isSaturday());
                         modifyAlarmActivity.putExtra(AlarmFields.SUNDAY, alarm.isSunday());
                         modifyAlarmActivity.putExtra(AlarmFields.NAME, alarm.getName());
+                        modifyAlarmActivity.putExtra(AlarmFields.RINGTONE, alarm.getRingtone());
                         startActivity(modifyAlarmActivity);
                     } else {
                         alarm.cancel(MainActivity.this);

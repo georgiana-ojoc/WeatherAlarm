@@ -13,4 +13,5 @@ public final class AlarmFields {
     public static final String SATURDAY = "saturday";
     public static final String SUNDAY = "sunday";
     public static final String NAME = "name";
+    public static final String RINGTONE = "ringtone";
 }
