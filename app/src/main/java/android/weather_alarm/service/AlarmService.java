@@ -1,5 +1,7 @@
 package android.weather_alarm.service;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -22,6 +24,8 @@ public class AlarmService extends Service {
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
 
+    private int ringtoneIndex;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -31,37 +35,56 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(this, StartAlarmActivity.class);
+        Intent startAlarmIntent = new Intent(this, StartAlarmActivity.class);
 
         int id = intent.getIntExtra(AlarmFields.ID, -1);
         String name = intent.getStringExtra(AlarmFields.NAME);
         String ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
 
-        notificationIntent.putExtra(AlarmFields.ID, id);
-        notificationIntent.putExtra(AlarmFields.NAME, name);
-        notificationIntent.putExtra(AlarmFields.RINGTONE, ringtone);
+        startAlarmIntent.putExtra(AlarmFields.ID, id);
+        startAlarmIntent.putExtra(AlarmFields.NAME, name);
+        startAlarmIntent.putExtra(AlarmFields.RINGTONE, ringtone);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Activity.ACTIVITY_SERVICE);
+        String packageName = activityManager.getRunningTasks(1).get(0).topActivity
+                .getPackageName();
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.alarm)
-                .setContentTitle(String.format("\"%s\" alarm", name))
-                .setContentText("Touch to snooze or stop.")
-                .setContentIntent(pendingIntent)
-                .build();
+        if (packageName.equals("project.weather_alarm")) {
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.alarm)
+                    .setContentTitle(String.format("\"%s\" alarm", name))
+                    .setPriority(Notification.PRIORITY_MIN)
+                    .build();
+            startForeground(1, notification);
 
-        int ringtoneIndex = RingtoneUtility.getRingtoneResource(ringtone);
+            startAlarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startAlarmIntent);
+        } else {
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    startAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.alarm)
+                    .setContentTitle(String.format("\"%s\" alarm", name))
+                    .setContentText("Touch to snooze or stop.")
+                    .setContentIntent(pendingIntent)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .build();
+            startForeground(1, notification);
+        }
+
+        ringtoneIndex = RingtoneUtility.getRingtoneResource(ringtone);
         if (ringtoneIndex != -1) {
             mediaPlayer = MediaPlayer.create(this, ringtoneIndex);
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
+
+            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         }
 
         long[] pattern = {0, 100, 1000};
         vibrator.vibrate(pattern, 0);
-
-        startForeground(1, notification);
 
         return START_STICKY;
     }
@@ -70,7 +93,10 @@ public class AlarmService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        mediaPlayer.stop();
+        if (ringtoneIndex != -1) {
+            mediaPlayer.stop();
+        }
+
         vibrator.cancel();
     }
 

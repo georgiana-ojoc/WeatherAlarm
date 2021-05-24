@@ -62,6 +62,9 @@ public class RingtoneUtility {
         if (ringtone.equals("Soft chime")) {
             return 8;
         }
+        if (ringtone.equals("Weather forecast")) {
+            return 9;
+        }
         return 0;
     }
 }

@@ -34,4 +34,10 @@
         <service android:name=".service.AlarmService" />
         <service android:name=".service.RescheduleAlarmsService" />
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 </manifest>
