@@ -223,7 +223,7 @@ public class Alarm {
         }
         String text = String.format(Locale.getDefault(), "\"%s\" alarm %s for " +
                 "%s at %02d:%02d", name, type.toString(), computeRecurringDays(), hour, minute);
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 
         if (recurring) {
             final long dayMilliSeconds = 24 * 60 * 60 * 1000;
@@ -249,7 +249,7 @@ public class Alarm {
         alarmManager.cancel(pendingIntent);
         this.scheduled = false;
         String text = String.format("\"%s\" alarm canceled", name);
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
 
     public Calendar getCalendar() {
