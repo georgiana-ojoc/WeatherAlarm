@@ -47,6 +47,7 @@ public class StartAlarmActivity extends AppCompatActivity implements LocationLis
     private RequestQueue requestQueue;
     private TextToSpeech textToSpeech;
 
+    private String ringtone;
     private boolean started = false;
 
     @Override
@@ -60,7 +61,7 @@ public class StartAlarmActivity extends AppCompatActivity implements LocationLis
         Intent intent = getIntent();
         int id = intent.getIntExtra(AlarmFields.ID, -1);
         String name = intent.getStringExtra(AlarmFields.NAME);
-        String ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
+        ringtone = intent.getStringExtra(AlarmFields.RINGTONE);
 
         if (ringtone.equals("Weather forecast")) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -166,9 +167,10 @@ public class StartAlarmActivity extends AppCompatActivity implements LocationLis
         double longitude = location.getLongitude();
 
         if (!started) {
-            String key = "39130b9dd4c38900347c09e84e63e008";
+            String key = "";
             String url = String.format("https://api.openweathermap.org/data/2.5/onecall?lat=%s" +
-                    "&lon=%s&exclude=minutely,daily,alerts&units=metric&appid=%s", latitude, longitude, key);
+                    "&lon=%s&exclude=minutely,daily,alerts&units=metric&appid=%s", latitude,
+                    longitude, key);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, response ->
@@ -235,7 +237,10 @@ public class StartAlarmActivity extends AppCompatActivity implements LocationLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        textToSpeech.stop();
+
+        if (ringtone.equals("Weather forecast")) {
+            textToSpeech.stop();
+        }
     }
 
     private void speak(String text) {

@@ -67,7 +67,7 @@ public class ModifyAlarmActivity extends AppCompatActivity {
         setDays.put(SUNDAY, intent.getBooleanExtra(AlarmFields.SUNDAY, false));
         weekDaysPicker.setCustomDays(setDays);
 
-        Spinner spinner = (Spinner) findViewById(R.id.ringtonesSpinner);
+        Spinner spinner = findViewById(R.id.ringtonesSpinner);
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,
                 R.array.ringtones, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

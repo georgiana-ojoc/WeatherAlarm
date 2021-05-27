@@ -5,7 +5,6 @@ import android.view.View;
 import android.weather_alarm.R;
 import android.weather_alarm.data.Alarm;
 import android.weather_alarm.utility.AnimationUtility;
-import android.weather_alarm.utility.RingtoneUtility;
 import android.weather_alarm.utility.TimePickerUtility;
 import android.weather_alarm.view.AlarmViewModel;
 import android.widget.AdapterView;
@@ -59,7 +58,7 @@ public class AddAlarmActivity extends AppCompatActivity {
         setDays.put(SUNDAY, false);
         weekDaysPicker.setCustomDays(setDays);
 
-        Spinner spinner = (Spinner) findViewById(R.id.ringtonesSpinner);
+        Spinner spinner = findViewById(R.id.ringtonesSpinner);
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,
                 R.array.ringtones, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
