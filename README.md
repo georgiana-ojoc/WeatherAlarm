@@ -1,2 +1,2 @@
 # WeatherAlarm
-![Functionality](https://github.com/georgiana-ojoc/WeatherAlarm/blob/main/Functionality.mp4)  
+![Functionality](https://youtu.be/1Zw_yEdp9L4)  
