@@ -1,2 +1,2 @@
 # WeatherAlarm
-![Functionality](https://youtu.be/1Zw_yEdp9L4)  
+[Functionality](https://youtu.be/1Zw_yEdp9L4)  
